@@ -31,11 +31,11 @@ gamma_bands = [30 55];
 bands = [alpha_bands; beta_bands; gamma_bands]; % alpha, beta, gamma
 
 % Initialize matrices to store the feature values
-E = zeros(n_epochs, size(bands,1), size(eeg_signal,2));
-%ER = zeros(n_epochs, size(bands,1), size(eeg_signal,2));
-EE = zeros(n_epochs, size(bands,1), size(eeg_signal,2));
-DE = zeros(n_epochs, size(bands,1), size(eeg_signal,2));
-PSD = zeros(n_epochs, Fs+1,size(eeg_signal,2));
+E = zeros(n_epochs, size(eeg_signal,2), size(bands,1));
+% ER = zeros(n_epochs, size(eeg_signal,2), size(bands,1));
+EE = zeros(n_epochs, size(eeg_signal,2), size(bands,1));
+DE = zeros(n_epochs, size(eeg_signal,2), size(bands,1));
+% PSD = zeros(n_epochs, size(eeg_signal,2), Fs+1);
 ASM = zeros(n_epochs, 2);
 %RASM = zeros(n_epochs, size(eeg_signal,2));
 DASM = zeros(n_epochs, 2);
@@ -51,7 +51,6 @@ for i = 1:n_epochs
     
     % Compute the power spectral density of the epoch
     [psd, f] = pwelch(epoch, w, epoch_samples/2, [], Fs);
-    PSD(i,:) = psd;
 
     % Loop over the frequency bands and compute the features for each channel
     for j = 1:size(bands, 1)
@@ -70,18 +69,20 @@ for i = 1:n_epochs
         ee = -sum((energy ./ total_energy) .* log2(energy ./ total_energy), 1);
         
         % Store the feature values in the matrices
-        E(i,j,:) = energy;
-        EE(i,j,:) = ee;
+        E(i,:,j) = energy;
+        EE(i,:,j) = ee;
         
         % Define parameters for differential entropy estimation
         nBins = 500; % number of bins for histogram
-        for ch = k:size(epoch, 2)
-            binEdges = linspace(min(epoch(:,k)), max(epoch(:,k)), nBins+1); % edges of histogram bins
+        epoch = preProcessEEG(epoch, bands(j,:), Fs);
+        for ch = 1:size(epoch, 2)
+
+            binEdges = linspace(min(epoch(:,ch)), max(epoch(:,ch)), nBins+1); % edges of histogram bins
             binWidth = binEdges(2) - binEdges(1); % width of histogram bins
-            [binCounts, ~] = histcounts(eeg_signal(:,i), binEdges);
+            [binCounts, ~] = histcounts(epoch(:,ch), binEdges);
             binCounts = binCounts / sum(binCounts); % normalize bin counts to obtain PDF
             de = -sum(binCounts(binCounts > 0) .* log2(binCounts(binCounts > 0))) * binWidth;
-            DE(i,j,k) = de;
+            DE(i,ch,j) = de;
         end  
 
         % Compute the asymmetry measures for the alpha band and each channel
@@ -97,7 +98,16 @@ for i = 1:n_epochs
             asm = alpha_power_right-alpha_power_left;
             % Store the asymmetry measures in the matrices
             ASM(i,:) = asm;
-            DASM(i,:) = mean(DE(i,1,right_channels)) - mean(DE(i,1,left_channels))
+            DASM(i,:) = mean(DE(i,right_channels,1)) - mean(DE(i,left_channels,1));
         end
     end
 end
+
+figure;
+plot(DASM(:,1));
+figure
+plot(EE(:,:,3))
+legend('TP9','AF7','AF8','TP10')
+figure
+plot(E(:,:,1)./E(:,:,3))
+legend('TP9','AF7','AF8','TP10')
