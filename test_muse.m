@@ -28,4 +28,4 @@ while cont
 end
 
 M = [vector_tp9, vector_af7, vector_af8, vector_tp10, vector_raux];
-writematrix('my_matrix.csv', M)
+writematrix(M, 'data_andreia_2.csv')

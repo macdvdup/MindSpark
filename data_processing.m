@@ -1,5 +1,5 @@
 clear all; close all;
-%addpath 'D:\Neuro\Projeto\MindSpark\functions'
+addpath 'functions'
 
 data = csvread("my_matrix.csv");
 Fs = 256; % Sampling frequency
@@ -72,6 +72,8 @@ title('Gamma band');
 xlabel('Time (s)');
 ylabel('Voltage (uV)');
 
+%% RÁCIO DE ENERGIAS ALPHA E GAMMA
+
 % Set the interval duration in seconds
 interval_duration = 2;
 
@@ -82,14 +84,18 @@ interval_length = round(interval_duration * Fs);
 num_intervals = floor(length(alpha_signal) / interval_length);
 
 % Initialize an array to store the energy values
-energy = zeros(num_intervals, 1);
+energy_alpha = zeros(num_intervals, 1);
+energy_gamma = zeros(num_intervals, 1);
 
 % Calculate the energy for each interval
 for i = 1:num_intervals
     start_index = (i - 1) * interval_length + 1;
     end_index = start_index + interval_length - 1;
-    energy(i) = sum(alpha_signal(start_index:end_index).^2);
+    energy_alpha(i) = sum(alpha_signal(start_index:end_index).^2);
+    energy_gamma(i) = sum(gamma_signal(start_index:end_index).^2);
 end
+
+energy = energy_alpha ./ energy_gamma;
 
 % Plot the energy values over time
 t = (1:num_intervals) * interval_duration;
@@ -99,4 +105,5 @@ xlabel('Time (s)');
 ylabel('Energy');
 title('Signal Energy Over Time');
 
+%% DASM - ALPHA
 
