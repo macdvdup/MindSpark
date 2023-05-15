@@ -5,7 +5,7 @@ function PSD = psd_signal(X, epoch_length, Fs, Freqs)
     window = epoch_length * Fs;
 
     for i = 1:n_epochs
-        epoch_signal = X(i:i+window-1);
+        epoch_signal = X((i-1)*window+1:i*window);
         [psd, f] = pwelch(epoch_signal, [], [], [], Fs);
         ind = f >= Freqs(1) & f <= Freqs(2);
         PSD(i) = (trapz(f(ind), psd(ind)));

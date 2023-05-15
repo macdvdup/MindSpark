@@ -5,7 +5,7 @@ function EE = energy_entropy(X, epoch_length, Fs)
     EE = zeros(1,n_epochs);
 
     for i = 1:n_epochs
-        epoch_signal = X(i:i+window-1);
+        epoch_signal = X((i-1)*window+1:i*window);
         [psd, ~] = pwelch(epoch_signal, [], [], [], Fs);
         psd = psd / sum(psd);
         EE(i) = -sum(log(psd.^2));

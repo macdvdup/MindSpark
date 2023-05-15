@@ -25,15 +25,15 @@ for i=1:length(subjects)
         str = {'GAMEEMO', subjects(i).name, 'Preprocessed EEG Data', '.mat format', file_str};
         str = strjoin(str, '\');
         load(str);
-        calm_AF3 = T7';
-        calm_AF4 = T8';
+        calm_AF3 = AF3';
+        calm_AF4 = AF4';
 
         file_str = strcat(replace(subjects(i).name, {'(', ')'}, ''), 'G3AllChannels.mat');
         str = {'GAMEEMO', subjects(i).name, 'Preprocessed EEG Data', '.mat format', file_str};
         str = strjoin(str, '\');
         load(str);
-        horror_AF3 = T7';
-        horror_AF4 = T8';
+        horror_AF3 = AF3';
+        horror_AF4 = AF4';
 
         low_cf = 1;
         high_cf = 50;
@@ -66,17 +66,6 @@ for i=1:length(subjects)
         theta_signal = (theta_signal_AF4 + theta_signal_AF3) ./2;
 
         for m=1:size(eeg_signal_AF3)
-%             PSD = psd_signal(beta_signal_AF3(m,:), epoch_length, Fs, alpha_freq);
-%             psd_patients(m,i) = mean(PSD);
-%             DE = differential_entropy(beta_signal_AF3(m,:), epoch_length, Fs);
-%             de_patients(m,i) = mean(DE);
-%             E = signal_energy(beta_signal_AF3(m,:), epoch_length, Fs);
-%             e_patients(m,i) = mean(E);
-%             DASM = dasm_signal(beta_signal_AF3(m,:), beta_signal_AF4, epoch_length, Fs);
-%             dasm_patients(m,i) = mean(DASM);
-%             EE = energy_entropy(beta_signal_AF3(m,:), epoch_length, Fs);
-%             ee_patients(m,i) = mean(EE);
-
             EalphaGamma(m,i) = mean(signal_energy(alpha_signal(m,:), epoch_length, Fs)./signal_energy(gamma_signal(m,:), epoch_length, Fs));
             EalphaBetaASM(m,i) = mean(signal_energy(alpha_signal(m,:), epoch_length, Fs)./asm_signal(beta_signal_AF3,beta_signal_AF4,epoch_length, Fs));
             EEbeta(m,i) = mean(energy_entropy(beta_signal(m,:), epoch_length, Fs));
