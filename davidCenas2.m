@@ -67,7 +67,7 @@ for i = 1:n_epochs
         ee = -sum((energy ./ sum(energy)) .* log2(energy ./ sum(energy)), 1);
         
         % Compute the differential entropy for each channel
-        de = -sum((psd(ind,:) ./ sum(psd(ind,:))) .* log2(psd(ind,:) ./ sum(psd(ind,:))), 1);
+        de = -sum(   (psd(ind,:) ./ sum(psd(ind,:))      ) .* log2(psd(ind,:) ./ sum(psd(ind,:))), 1);
         
         % Store the feature values in the matrices
         E(i,j,:) = energy;
