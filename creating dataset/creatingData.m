@@ -6,7 +6,7 @@ addpath 'C:\Users\david\OneDrive\Documentos\GitHub\MindSpark\functions\sigprocfu
 subjects = dir('C:\Users\david\OneDrive\Documentos\GitHub\MindSpark\GAMEEMO');
 
 epoch_length = 30; 
-features = zeros(1,8);
+features = zeros(1,13);
 
 for i=1:length(subjects)
     if contains(subjects(i).name,')')
@@ -103,8 +103,8 @@ for i=1:length(subjects)
             DASMalphaP = dasm_signal(alpha_signal_P7(m,:), alpha_signal_P8(m,:), epoch_length, Fs);
 
 
-            samples = [EalphaGamma',EalphaBetaASM',EEbeta',EEgamma',EEtheta',DASMalpha',psd_patients',ones(length(psd_patients),1)*(m-1)];
-            %samples(:,end+1:end+6) = [EalphaGammaP',EalphaBetaASMP',EEbetaP',EEalfaP',DASMalphaP'];
+            samples = [EalphaGamma',EalphaBetaASM',EEbeta',EEgamma',EEtheta',DASMalpha',psd_patients'];
+            samples(:,end+1:end+6) = [EalphaGammaP',EalphaBetaASMP',EEbetaP',EEalfaP',DASMalphaP',ones(length(psd_patients),1)*(m-1)];
             features(end+1:end+length(psd_patients),:) = samples;
         end
     end
@@ -112,8 +112,8 @@ end
 
 features = features(2:end,:);
 features = array2table(features);
-features.Properties.VariableNames(1:8) = {'EalphaGamma','EalphaBetaASM','EEbeta','EEgamma','EEtheta','DASMalpha','psdBeta','Class'};
-%features.Properties.VariableNames(8:13) = {'EalphaGammaP','EalphaBetaASMP','EEbetaP','EEalphaP','DASMalphaP','Class'};
+features.Properties.VariableNames(1:7) = {'EalphaGamma','EalphaBetaASM','EEbeta','EEgamma','EEtheta','DASMalpha','psdBeta'};
+features.Properties.VariableNames(8:13) = {'EalphaGammaP','EalphaBetaASMP','EEbetaP','EEalphaP','DASMalphaP','Class'};
 
 writetable(features,'features.csv');
 

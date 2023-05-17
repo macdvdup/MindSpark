@@ -40,4 +40,6 @@ for fold=1:kFold
 end
 
 disp(['Accuracy ' num2str(mean(accs))]);
-%save('bestModelBoth.mat','bestClassifier')
+save('bestModelBoth.mat','bestClassifier')
+save('miu.mat','mu')
+save('sigma.mat','sigma')
