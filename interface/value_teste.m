@@ -1,3 +1,9 @@
-val= 4; 
-assignin('base', 'val', val);
-%save('result.txt', 'val', '-ascii');
+function val = value_teste()
+    val = 10;
+    global cont;
+    while cont
+        %global cont;
+    end
+
+    val= 50;
+end
