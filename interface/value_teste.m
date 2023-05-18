@@ -1,2 +1,2 @@
-val= 54; 
-%save('result.txt', 'score', '-ascii');
+val= 24; 
+save('result.txt', 'val', '-ascii');
