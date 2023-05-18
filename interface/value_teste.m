@@ -1,2 +1,3 @@
 val= 4; 
-save('result.txt', 'val', '-ascii');
+assignin('base', 'val', val);
+%save('result.txt', 'val', '-ascii');
