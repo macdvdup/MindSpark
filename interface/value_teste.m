@@ -1,2 +1,2 @@
-val= 24; 
+val= 4; 
 save('result.txt', 'val', '-ascii');

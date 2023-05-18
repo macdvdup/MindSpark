@@ -1,3 +1,3 @@
 disp('ola');
-val = 7;
+val = 99;
 save('result.txt', 'val', '-ascii');
