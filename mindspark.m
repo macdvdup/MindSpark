@@ -78,7 +78,7 @@ modelFile = strjoin(datasetFolder, '\')+"\bestModelBoth.mat";
 load(modelFile,'bestClassifier','mu','sigma');
 
 features = [EalphaGamma_af' EalphaBetaASM_af' EEbeta_af' EEgamma_af' EEtheta_af' DASMalpha_af' PSD_beta_af' EalphaGamma_tp' EalphaBetaASM_tp' EEbeta_tp' EEgamma_tp' EEtheta_tp' DASMalpha_tp' PSD_beta_tp'];
-features = (features-mu)/sigma;
+features = (features-mu)./sigma;
 [predictedY, scores, as] = predict(bestClassifier, X_test);
 % predictedY- 1 if stressed, 0 if normal
 % scores - analog to class probability
@@ -92,3 +92,4 @@ for i=1:length(predictedY)
     end
 end
 
+plot(scores)
