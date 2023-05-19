@@ -8,15 +8,19 @@ y = features.Class; % Replace 'labels' with the appropriate variable name
 % Step 2: Preprocess the features if necessary
 % (e.g., feature scaling using z-score normalization)
 
-kFold = 5; % Set the ratio for the training set
+kFold = 14; % Set the ratio for the training set
 % Step 3: Split the dataset into training and testing sets
 % With Cross validation
-pt = cvpartition(y, 'KFold', kFold);
+pt = cvpartition(y, 'KFold', kFold,'Stratify',true);
 accs = zeros(kFold,1);
 bestAcc=0;
+
+lenFold = length(X)/kFold
 for fold=1:kFold
-    trainIndex = training(pt,fold);
-    testIndex = test(pt,fold);
+    testIndex = lenFold*(fold-1)+1:lenFold*fold;
+    %training(pt,fold);  
+    trainIndex = setdiff(linspace(1,length(X),length(X)),testIndex);
+    %test(pt,fold);
     X_train = X(trainIndex,:);
     y_train  = y(trainIndex);
 
@@ -27,12 +31,14 @@ for fold=1:kFold
     y_test  = y(testIndex);
 
     % Step 4: Train Model
-    classifier = fitcknn(X_train_norm, y_train,'Distance','cityblock','NumNeighbors',5);
-    %classifier.ClassNames = {"Natural","Stress"}
+    classifier = fitcknn(X_train_norm, y_train, 'Distance', 'cityblock', 'NumNeighbors', 5);
+
+    % classifier.ClassNames = {"Natural","Stress"}
     % Step 5: Evaluate the model using the testing data
-    predictedY = predict(classifier, X_test);
-    
+    [predictedY, scores, as]= predict(classifier, X_test);
+
     accs(fold,1) = sum(predictedY == y_test) / numel(y_test);
+
     if accs(fold,1)>bestAcc
         bestClassifier = classifier;
         bestAcc = accs(fold,1);
@@ -40,6 +46,4 @@ for fold=1:kFold
 end
 
 disp(['Accuracy ' num2str(mean(accs))]);
-save('bestModelBoth.mat','bestClassifier')
-save('miu.mat','mu')
-save('sigma.mat','sigma')
+save('bestModelBoth.mat','bestClassifier','mu','sigma')

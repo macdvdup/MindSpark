@@ -6,7 +6,7 @@ addpath 'C:\Users\david\OneDrive\Documentos\GitHub\MindSpark\functions\sigprocfu
 subjects = dir('C:\Users\david\OneDrive\Documentos\GitHub\MindSpark\GAMEEMO');
 
 epoch_length = 30; 
-features = zeros(1,13);
+features = zeros(1,15);
 
 for i=1:length(subjects)
     if contains(subjects(i).name,')')
@@ -51,6 +51,7 @@ for i=1:length(subjects)
         beta_signal_AF3 = eegfilt(eeg_signal_AF3, Fs, beta_freq(1), beta_freq(2));
         theta_signal_AF3 = eegfilt(eeg_signal_AF3, Fs, theta_freq(1), theta_freq(2));
         gamma_signal_AF3 = eegfilt(eeg_signal_AF3, Fs, gamma_freq(1), gamma_freq(2));
+
         alpha_signal_AF4 = eegfilt(eeg_signal_AF4, Fs, alpha_freq(1), alpha_freq(2));
         beta_signal_AF4 = eegfilt(eeg_signal_AF4, Fs, beta_freq(1), beta_freq(2));
         theta_signal_AF4 = eegfilt(eeg_signal_AF4, Fs, theta_freq(1), theta_freq(2));
@@ -65,13 +66,17 @@ for i=1:length(subjects)
         alpha_signal_P7 = eegfilt(eeg_signal_P7, Fs, alpha_freq(1), alpha_freq(2));
         beta_signal_P7 = eegfilt(eeg_signal_P7, Fs, beta_freq(1), beta_freq(2));
         gamma_signal_P7 = eegfilt(eeg_signal_P7, Fs, gamma_freq(1), gamma_freq(2));
+        theta_signal_P7 = eegfilt(eeg_signal_P7, Fs, theta_freq(1), theta_freq(2));
+
         alpha_signal_P8= eegfilt(eeg_signal_P8, Fs, alpha_freq(1), alpha_freq(2));
         beta_signal_P8 = eegfilt(eeg_signal_P8, Fs, beta_freq(1), beta_freq(2));
         gamma_signal_P8 = eegfilt(eeg_signal_P8, Fs, gamma_freq(1), gamma_freq(2));
+        theta_signal_P8 = eegfilt(eeg_signal_P8, Fs, theta_freq(1), theta_freq(2));
 
         alpha_signalP = (alpha_signal_P7 + alpha_signal_P8) ./2;
         beta_signalP = (beta_signal_P7 + beta_signal_P8) ./2;
         gamma_signalP = (gamma_signal_P7 + gamma_signal_P8) ./2;
+        theta_signalP = (theta_signal_P7 + theta_signal_P8) ./2;
 
         for m=1:size(eeg_signal_AF3)
             % AF features
@@ -88,24 +93,28 @@ for i=1:length(subjects)
             % DASM alpha
             DASMalpha = dasm_signal(alpha_signal_AF3(m,:), alpha_signal_AF4(m,:), epoch_length, Fs);
             % PSD beta
-            psd_patients= psd_signal(beta_signalAF(m,:), epoch_length, Fs, beta_freq); 
+            PSD_beta_AF= psd_signal(beta_signalAF(m,:), epoch_length, Fs, beta_freq); 
 
             % TP (based on P7 and P8 instead of TP9 and TP10)
-            
+            % Energy alfa/gamma
             EalphaGammaP = signal_energy(alpha_signalP(m,:), epoch_length, Fs)./signal_energy(gamma_signalP(m,:), epoch_length, Fs);
             % Energy alfa/beta_ASM
             EalphaBetaASMP = signal_energy(alpha_signalP(m,:), epoch_length, Fs)./asm_signal(beta_signal_P7,beta_signal_P8,epoch_length, Fs);
             % Entropy Energy beta
             EEbetaP = energy_entropy(beta_signalP(m,:), epoch_length, Fs);
+            % Entropy Energy gamma
+            EEgammaP = energy_entropy(gamma_signalP(m,:), epoch_length,Fs);
             % Entropy Energy theta
-            EEalfaP = energy_entropy(alpha_signalP(m,:), epoch_length,Fs);
+            EEthetaP = energy_entropy(theta_signalP(m,:), epoch_length,Fs);
             % DASM alpha
             DASMalphaP = dasm_signal(alpha_signal_P7(m,:), alpha_signal_P8(m,:), epoch_length, Fs);
+            % PSD beta
+            PSD_beta_P= psd_signal(beta_signalAF(m,:), epoch_length, Fs, beta_freq); 
 
 
-            samples = [EalphaGamma',EalphaBetaASM',EEbeta',EEgamma',EEtheta',DASMalpha',psd_patients'];
-            samples(:,end+1:end+6) = [EalphaGammaP',EalphaBetaASMP',EEbetaP',EEalfaP',DASMalphaP',ones(length(psd_patients),1)*(m-1)];
-            features(end+1:end+length(psd_patients),:) = samples;
+            samples = [EalphaGamma', EalphaBetaASM', EEbeta', EEgamma', EEtheta', DASMalpha', PSD_beta_AF'];
+            samples(:,end+1:end+8) = [EalphaGammaP', EalphaBetaASMP', EEbetaP', EEgammaP', EEthetaP', DASMalphaP', PSD_beta_P', ones(length(PSD_beta_P),1)*(m-1)];
+            features(end+1:end+length(PSD_beta_P),:) = samples;
         end
     end
 end
@@ -113,7 +122,7 @@ end
 features = features(2:end,:);
 features = array2table(features);
 features.Properties.VariableNames(1:7) = {'EalphaGamma','EalphaBetaASM','EEbeta','EEgamma','EEtheta','DASMalpha','psdBeta'};
-features.Properties.VariableNames(8:13) = {'EalphaGammaP','EalphaBetaASMP','EEbetaP','EEalphaP','DASMalphaP','Class'};
+features.Properties.VariableNames(8:15) = {'EalphaGammaP','EalphaBetaASMP','EEbetaP','EEgammaP','EEthetaP','DASMalphaP','psdBetaP','Class'};
 
 writetable(features,'features.csv');
 

@@ -9,9 +9,9 @@ function PSD = psd_signal(X, epoch_length, Fs, Freqs)
         [psd, f] = pwelch(epoch_signal, [], [], [], Fs);
         ind = f >= Freqs(1) & f <= Freqs(2);
         if i==1  
-            baseline = (trapz(f(ind), psd(ind)));
+            baseline = trapz(f(ind), psd(ind))/trapz(f, psd);
         else
-            PSD(i-1) = (trapz(f(ind), psd(ind)))-baseline;
+            PSD(i-1) = trapz(f(ind), psd(ind))/trapz(f, psd)-baseline;
         end
     end
 end
