@@ -10,7 +10,7 @@ function DE = differential_entropy(X, epoch_length, Fs)
         if i==1
             baseline = 0.5 * log(2 * pi * exp(1) * sigma);
         else
-            DE(i) = 0.5 * log(2 * pi * exp(1) * sigma) - baseline;
+            DE(i-1) = 0.5 * log(2 * pi * exp(1) * sigma) - baseline;
         end
     end
 end
