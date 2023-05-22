@@ -1,14 +1,11 @@
 % Specify the file paths of the two audio files
-file1 = 'audio.mp3';
+file = 'audio.mp3';
 
-% Read the audio data from the files
-[audio1, fs1] = audioread(file1);
+[audio, fs] = audioread(file);
 
-% Combine the audio files by concatenating their data
-combinedAudio = [audio1; audio1; audio1; audio1; audio1];
+combinedAudio = [audio; audio; audio; audio; audio];
 
-% Write the combined audio to a new file
 outputFile = 'audio_maior.mp3';
-audiowrite(outputFile, combinedAudio, fs1);
+audiowrite(outputFile, combinedAudio, fs);
 
 disp('Audio files combined successfully.');
