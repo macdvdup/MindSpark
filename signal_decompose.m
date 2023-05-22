@@ -4,12 +4,18 @@ function [alpha, theta, beta, gamma] = signal_decompose(signal, Fs, specific)
     beta_freq = [14, 30];
     gamma_freq = [30; 80];
     
+
     low_cf = 1;
-    high_cf = 50;
+    high_cf = 80;
     filter_order = 4;
     [b, a] = butter(filter_order, [low_cf high_cf]/(Fs/2));
     signal = filtfilt(b,a,signal);
     
+    d = designfilt('bandstopiir','FilterOrder',4, ...
+               'HalfPowerFrequency1',49,'HalfPowerFrequency2',51, ...
+               'DesignMethod','butter','SampleRate',Fs);
+    signal = filtfilt(d,signal);
+
     if ~exist('specific', 'var')
         alpha = eegfilt(signal, Fs, alpha_freq(1), alpha_freq(2));
         beta = eegfilt(signal, Fs, beta_freq(1), beta_freq(2));
