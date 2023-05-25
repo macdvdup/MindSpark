@@ -78,20 +78,6 @@ function val = mindspark()
     features = (features-mu)./sigma;
     [~, scores, ~] = predict(bestClassifier, features);
     
-    % predictedY- 1 if stressed, 0 if normal
-    % scores - analog to class probability
-    
-    %     for i=1:length(predictedY)
-    %         str="";
-    %         if predictedY(i)==1
-    %             str = str + "Stress: Level " + int2str(scores(i)*5);
-    %         else
-    %             str = str + "Calm : Level " + int2str(scores(i)*5);
-    %         end
-    %     end
-    
-    %global sc;
-    %sc = max(scores(:,1)) * 100;
     
     val = 20;
 end
