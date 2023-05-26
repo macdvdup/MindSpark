@@ -17,3 +17,4 @@ The repository contains other files used along the project development.
 * functions: EEGLab functions that are used in the MindSpark program
 * helper: scripts used to test the the functions and EEG data acquire to visualize those functions
 * creating dataset: scripts, features data and KNN model used
+* loose files: the functions used to determine the necessary features from the EEG signal
