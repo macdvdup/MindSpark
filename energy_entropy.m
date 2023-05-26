@@ -33,11 +33,21 @@ function EE = energy_entropy(X, epoch_length, Fs)
     for i = 1:n_epochs
         % Selects the epoch points
         epoch_signal = X((i-1)*window+1:i*window);
+
+        % Determines tha Welch’s power spectral density
         [psd, ~] = pwelch(epoch_signal, [], [], [], Fs);
+
+        % Normalizes the psd
         psd = psd / sum(psd);
+
+        % Determines the energy entropy of each epoch using the methodology 
+        % of the above mentioned article
         if i==1
+            % The first epoch serves as a baseline
             baseline = - sum(log(psd.^2));
         else
+            % Each epoch energy entropy is then determined with reference 
+            % to the baseline
             EE(i-1) = -sum(log(psd.^2))-baseline;
         end
     end

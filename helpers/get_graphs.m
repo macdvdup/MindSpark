@@ -11,7 +11,7 @@ addpath 'functions\'
 % eeg_data = AF3';
 % Fs = 128;
 thenvelopewindow=20;
-eeg_data = csvread("Outros/my_matrix.csv");
+eeg_data = csvread("Outros/subject1.csv");
 Fs = 256; % Sampling frequency
 eeg_data = eeg_data(1,10*Fs:Fs*21);
 t = linspace(0, length(eeg_data)/Fs,length(eeg_data));
