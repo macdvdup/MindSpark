@@ -1,5 +1,6 @@
 # MindSpark
 ### Muse Device-based Matlab application for stress relief.
+![MindSpark Logo](https://github.com/macdvdup/MindSpark/blob/main/interface/logo2.png?raw=true)
 
 With this work, we porpused a MatLab application for meditation subject using the Muse Wearable device. 
 
